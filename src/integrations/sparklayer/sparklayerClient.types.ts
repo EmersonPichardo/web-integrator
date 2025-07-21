@@ -1,4 +1,4 @@
-//Tokens
+// Tokens
 export interface SparklayerLocalSession {
 	accessToken: string;
 	expiresAt: Date;
@@ -8,25 +8,22 @@ export interface SparklayerTokenResponse {
 	expires_in: number;
 }
 
-//Price Lists
+// Price Lists
 export interface SparklayerNewPriceListRequest {
 	name: string;
-	currency_code: string;
 	prices?: any[];
 }
 export interface SparklayerNewPriceListResponse {
+	id: string;
 	slug: string;
 }
 
-//Customers
+// Customers
 export interface SparklayerNewCustomerRequest {
 	name: string;
 	email: string;
-	group?: string;
 }
 export interface SparklayerNewCustomerResponse {
 	id: string;
-	name: string;
-	email: string;
-	group?: string;
+	group: string;
 }

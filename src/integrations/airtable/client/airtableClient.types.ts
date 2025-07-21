@@ -1,3 +1,4 @@
+// Webhooks
 export interface AirtableWebhook {
 	id: string;
 	notificationUrl: string;
@@ -15,4 +16,9 @@ export interface AirtableCreateWebhookResponse {
 
 export interface AirtableRefreshWebhookResponse {
 	expirationTime: Date;
+}
+
+// Tickets
+export enum AirtableTicketStatus {
+	Completed = "completed"
 }

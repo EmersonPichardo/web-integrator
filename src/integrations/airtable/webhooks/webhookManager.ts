@@ -6,7 +6,7 @@ dotenv.config();
 const WEBHOOK_URL = process.env.WEBHOOK_URL?.replace(/\/$/, ''); // remove trailing slash
 if (!WEBHOOK_URL) throw new Error('Missing WEBHOOK_URL in environment variables');
 
-export const initWebhooks = async (): Promise<void> => {
+const initWebhooks = async (): Promise<void> => {
 	const webhooks = await airtableClient.webHooks.get();
 
 	for (const type of Object.values(WebhookType)) {
@@ -28,3 +28,6 @@ function scheduleWebhookRefresh(webhookId: string, expirationTime: Date) {
 	}, expirationTime.getTime() - Date.now() - (60000 * 5)); // Refresh 5 minute before expiration
 }
 
+export const webhookManager = {
+	initWebhooks
+}

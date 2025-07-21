@@ -2,16 +2,16 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 import WebhookType from '../webhooks/webhookType';
 import { webhookSpecificationManager } from '../webhooks/specifications/webhookSpecificationManager';
-import { AirtableCreateWebhookResponse, AirtableGetWebhooksResponse, AirtableRefreshWebhookResponse, AirtableWebhook } from './airtableClient.types';
+import { AirtableCreateWebhookResponse, AirtableGetWebhooksResponse, AirtableRefreshWebhookResponse, AirtableTicketStatus, AirtableWebhook } from './airtableClient.types';
 dotenv.config();
 
-const AIRTABLE_API_URL = process.env.AIRTABLE_API_URL?.replace(/\/$/, ''); // remove trailing slash
+const AIRTABLE_API_BASE_URL = process.env.AIRTABLE_API_BASE_URL?.replace(/\/$/, ''); // remove trailing slash
 const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
-if (!AIRTABLE_API_KEY || !AIRTABLE_API_URL || !AIRTABLE_BASE_ID) throw new Error('Missing Airtable configuration in environment variables');
+if (!AIRTABLE_API_KEY || !AIRTABLE_API_BASE_URL || !AIRTABLE_BASE_ID) throw new Error('Missing Airtable configuration in environment variables');
 
 const airtableApi = axios.create({
-	baseURL: AIRTABLE_API_URL,
+	baseURL: AIRTABLE_API_BASE_URL,
 	headers: {
 		Authorization: `Bearer ${AIRTABLE_API_KEY}`,
 		'Content-Type': 'application/json'
@@ -48,7 +48,7 @@ const refreshWebhook = async (webhookId: string): Promise<Date> => {
 //Tickets management
 const baseTicketsEndpoint = `/bases/${AIRTABLE_BASE_ID}/tables/{tickets-table-id}`;
 
-const updateTicketStatus = async (ticketId: string, status: string): Promise<void> => {
+const updateTicketStatus = async (ticketId: string, status: AirtableTicketStatus): Promise<void> => {
 	await airtableApi.patch(`${baseTicketsEndpoint}/records/${ticketId}`, { fields: { Status: status } });
 }
 

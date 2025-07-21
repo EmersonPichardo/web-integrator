@@ -3,12 +3,12 @@ import dotenv from 'dotenv';
 import { CustomerResponse } from './shopifyClient.types';
 dotenv.config();
 
-const SHOPIFY_BASE_URL = process.env.SHOPIFY_BASE_URL?.replace(/\/$/, ''); // remove trailing slash
+const SHOPIFY_API_BASE_URL = process.env.SHOPIFY_API_BASE_URL?.replace(/\/$/, ''); // remove trailing slash
 const SHOPIFY_API_TOKEN = process.env.SHOPIFY_API_TOKEN;
-if (!SHOPIFY_BASE_URL || !SHOPIFY_API_TOKEN) throw new Error('Missing Shopify configurations in environment variables');
+if (!SHOPIFY_API_BASE_URL || !SHOPIFY_API_TOKEN) throw new Error('Missing Shopify configurations in environment variables');
 
 const shopifyApi = axios.create({
-	baseURL: SHOPIFY_BASE_URL,
+	baseURL: SHOPIFY_API_BASE_URL,
 	headers: { 'X-Shopify-Access-Token': SHOPIFY_API_TOKEN, 'Content-Type': 'application/json' }
 });
 
