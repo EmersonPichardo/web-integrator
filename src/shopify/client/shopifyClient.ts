@@ -1,5 +1,6 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
+import { CustomerResponse } from './shopifyClient.types';
 dotenv.config();
 
 const SHOPIFY_BASE_URL = process.env.SHOPIFY_BASE_URL?.replace(/\/$/, ''); // remove trailing slash
@@ -20,13 +21,6 @@ shopifyApi.interceptors.response.use(
 );
 
 // Customers management
-interface CustomerResponse {
-	customer: {
-		id: number;
-		tags: string;
-	};
-}
-
 const addCustomerTags = async (customerId: number, tags: string[]): Promise<void> => {
 	const customerRes = await shopifyApi.get<CustomerResponse>(`/customers/${customerId}.json`);
 	const existingTags = customerRes.data.customer.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length);

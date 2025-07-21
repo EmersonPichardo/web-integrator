@@ -2,6 +2,7 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 import WebhookType from '../webhooks/webhookType';
 import { webhookSpecificationManager } from '../webhooks/specifications/webhookSpecificationManager';
+import { AirtableCreateWebhookResponse, AirtableGetWebhooksResponse, AirtableRefreshWebhookResponse, AirtableWebhook } from './airtableClient.types';
 dotenv.config();
 
 const AIRTABLE_API_URL = process.env.AIRTABLE_API_URL?.replace(/\/$/, ''); // remove trailing slash
@@ -9,30 +10,11 @@ const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
 if (!AIRTABLE_API_KEY || !AIRTABLE_API_URL || !AIRTABLE_BASE_ID) throw new Error('Missing Airtable configuration in environment variables');
 
-interface AirtableWebhook {
-	id: string;
-	notificationUrl: string;
-	expirationTime: Date;
-}
-
-interface AirtableGetWebhooksResponse {
-	webhooks: AirtableWebhook[];
-}
-
-interface AirtableCreateWebhookResponse {
-	id: string;
-	expirationTime: Date;
-}
-
-interface AirtableRefreshWebhookResponse {
-	expirationTime: Date;
-}
-
 const airtableApi = axios.create({
 	baseURL: AIRTABLE_API_URL,
 	headers: {
 		Authorization: `Bearer ${AIRTABLE_API_KEY}`,
-		'Content-Type': 'application/json',
+		'Content-Type': 'application/json'
 	}
 });
 
