@@ -18,7 +18,7 @@ export const priceListUploadedWebhookHandler = async (data: any): Promise<void> 
 
 	// Creating a new price list in Sparklayer
 	const sparklayerNewPriceListRequest: SparklayerNewPriceListRequest = {
-		name: customer.name,
+		name: customer.name, // TODO: Company name instead
 		prices: priceListDetails.data.map((item) => ({
 			product_id: item[0], // Assuming the first column is product ID
 			price: item[1], // Assuming the second column is the price
@@ -28,7 +28,7 @@ export const priceListUploadedWebhookHandler = async (data: any): Promise<void> 
 
 	// Creating a new customer in Sparklayer (including the customer group)
 	const sparklayerNewCustomerRequest: SparklayerNewCustomerRequest = {
-		name: customer.name,
+		name: customer.name,// TODO: Company name instead
 		email: customer.email
 	};
 	var sparklayerNewCustomerResponse = await sparklayerClient.customers.create(sparklayerNewCustomerRequest);

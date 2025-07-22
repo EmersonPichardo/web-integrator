@@ -4,12 +4,12 @@ const priceListUploadedWebhookSpecification: WebhookSpecification = {
 	options: {
 		filters: {
 			dataTypes: ["tableData"],
-			recordChangeScope: "{table-id}",
-			watchDataInFieldIds: ["{attament-column-id}"],
-			changeTypes: ["add"],
+			recordChangeScope: "tblvUIsjcW3gMnigw",
+			watchDataInFieldIds: ["fldHFdP023fNaaA6u"],
+			changeTypes: ["add", "update"]
 		},
 		includes: {
-			includeCellValuesInFieldIds: ["{id-column-id}", "{customer-name-column-id}", "{customer-email-column-id}"],
+			includeCellValuesInFieldIds: ["fldreJTMOYADTlAtg", "flddDdlLvrBhM3jDQ", "fldhtKnjqk8bD4SCI"]
 		}
 	}
 }

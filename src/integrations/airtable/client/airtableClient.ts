@@ -2,7 +2,7 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 import WebhookType from '../webhooks/webhookType';
 import { webhookSpecificationManager } from '../webhooks/specifications/webhookSpecificationManager';
-import { AirtableCreateWebhookResponse, AirtableGetWebhooksResponse, AirtableRefreshWebhookResponse, AirtableTicketStatus, AirtableWebhook } from './airtableClient.types';
+import { AirtableCreateWebhookResponse, AirtableGetWebhooksResponse, AirtableRefreshWebhookResponse, AirtableTicketStatus, AirtableWebhook, AirtableWebhookPayloadResponse } from './airtableClient.types';
 dotenv.config();
 
 const AIRTABLE_API_BASE_URL = process.env.AIRTABLE_API_BASE_URL?.replace(/\/$/, ''); // remove trailing slash
@@ -40,9 +40,19 @@ const createWebhook = async (type: WebhookType): Promise<AirtableCreateWebhookRe
 	return response?.data;
 }
 
+const deleteWebhook = async (webhookId: string): Promise<void> => {
+	await airtableApi.delete(`${baseWebhookEndpoint}/${webhookId}`);
+}
+
 const refreshWebhook = async (webhookId: string): Promise<Date> => {
 	const response = await airtableApi.post<AirtableRefreshWebhookResponse>(`${baseWebhookEndpoint}/${webhookId}/refresh`);
 	return response?.data?.expirationTime;
+};
+
+const getWebhookPayload = async (webhookId: string): Promise<AirtableWebhookPayloadResponse> => {
+	const response = await airtableApi.get<AirtableWebhookPayloadResponse>(`${baseWebhookEndpoint}/${webhookId}/payloads`);
+	const a = JSON.stringify(response?.data);
+	return response?.data;
 };
 
 //Tickets management
@@ -56,7 +66,9 @@ export const airtableClient = {
 	webHooks: {
 		get: getWebhooks,
 		create: createWebhook,
-		refresh: refreshWebhook
+		delete: deleteWebhook,
+		refresh: refreshWebhook,
+		getPayload: getWebhookPayload
 	},
 	tickets: {
 		updateStatus: updateTicketStatus
