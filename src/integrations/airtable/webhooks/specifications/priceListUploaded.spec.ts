@@ -6,7 +6,10 @@ const priceListUploadedWebhookSpecification: WebhookSpecification = {
 			dataTypes: ["tableData"],
 			recordChangeScope: "{table-id}",
 			watchDataInFieldIds: ["{attament-column-id}"],
-			changeTypes: ["add"]
+			changeTypes: ["add"],
+		},
+		includes: {
+			includeCellValuesInFieldIds: ["{id-column-id}", "{customer-name-column-id}", "{customer-email-column-id}"],
 		}
 	}
 }
