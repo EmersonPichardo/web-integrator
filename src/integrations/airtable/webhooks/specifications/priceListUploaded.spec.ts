@@ -1,17 +1,29 @@
 import { WebhookSpecification } from "./webhookSpecification";
 
-const priceListUploadedWebhookSpecification: WebhookSpecification = {
+export enum PriceListUploadedEntities {
+	'Customers' = 'tblvUIsjcW3gMnigw',
+	'Status' = 'fld7wEQHIAwCcx49e',
+	'Uploaded Price Sheet File' = 'fldHFdP023fNaaA6u',
+	'Customer ID' = 'fldreJTMOYADTlAtg',
+	'Customer Email' = 'flddDdlLvrBhM3jDQ',
+	'Company Name' = 'fldhtKnjqk8bD4SCI'
+}
+
+export const priceListUploadedWebhookSpecification: WebhookSpecification = {
 	options: {
 		filters: {
-			dataTypes: ["tableData"],
-			recordChangeScope: "tblvUIsjcW3gMnigw",
-			watchDataInFieldIds: ["fldHFdP023fNaaA6u"],
-			changeTypes: ["add", "update"]
+			dataTypes: ['tableData'],
+			recordChangeScope: PriceListUploadedEntities.Customers,
+			watchDataInFieldIds: [PriceListUploadedEntities['Status']],
+			changeTypes: ['update']
 		},
 		includes: {
-			includeCellValuesInFieldIds: ["fldreJTMOYADTlAtg", "flddDdlLvrBhM3jDQ", "fldhtKnjqk8bD4SCI"]
+			includeCellValuesInFieldIds: [
+				PriceListUploadedEntities["Customer ID"],
+				PriceListUploadedEntities["Customer Email"],
+				PriceListUploadedEntities["Company Name"],
+				PriceListUploadedEntities['Uploaded Price Sheet File']
+			]
 		}
 	}
 }
-
-export default priceListUploadedWebhookSpecification;

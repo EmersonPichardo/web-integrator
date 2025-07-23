@@ -21,7 +21,7 @@ shopifyApi.interceptors.response.use(
 );
 
 // Customers management
-const getCustomerTags = async (customerId: number): Promise<string[]> => {
+const getCustomerTags = async (customerId: string): Promise<string[]> => {
 	const query = `
 		query getCustomer($id: ID!) {
 			customer(id: $id) { tags }
@@ -39,14 +39,14 @@ const getCustomerTags = async (customerId: number): Promise<string[]> => {
 	return customer.tags || [];
 };
 
-const addCustomerTags = async (customerId: number, tags: string[]): Promise<void> => {
+const addCustomerTags = async (customerId: string, tags: string[]): Promise<void> => {
 	const existingTags = await getCustomerTags(customerId);
 
 	const mergedTags = Array.from(new Set([...existingTags, ...tags]));
 
 	const mutation = `
-		mutation customerSet($id: ID!, $input: CustomerInput!) {
-			customerSet(id: $id, input: $input) {
+		mutation customerUpdate($input: CustomerInput!) {
+			customerUpdate(input: $input) {
 				customer { id tags }
 				userErrors { field message }
 			}
@@ -54,14 +54,16 @@ const addCustomerTags = async (customerId: number, tags: string[]): Promise<void
 	`;
 
 	const variables = {
-		id: `gid://shopify/Customer/${customerId}`,
-		input: { mergedTags }
+		input: {
+			id: `gid://shopify/Customer/${customerId}`,
+			tags: mergedTags
+		}
 	};
 
 	const response = await shopifyApi.post('/', { query: mutation, variables });
 
-	const errors = response.data?.data?.customerSet?.userErrors;
-	if (errors?.length) throw new Error(`Error when adding Shopify customer tags: ${JSON.stringify(errors)}`);
+	const errors = JSON.stringify(response.data?.errors);
+	if (errors?.length) throw new Error(`Error when adding Shopify customer tags: ${errors}`);
 }
 
 export const shopifyClient = {

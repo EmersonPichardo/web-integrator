@@ -15,14 +15,16 @@ export interface AirtableRefreshWebhookResponse {
 	expirationTime: Date;
 }
 export interface AirtableWebhookPayloadResponse {
-	payloads: {
+	payloads: [{
 		actionMetadata: {
 			sourceMetadata: unknown
 		}
-	};
+	}],
+	cursor: number;
 }
 
-// Tickets
-export enum AirtableTicketStatus {
-	Completed = "completed"
+// Customers
+export enum AirtableCustomerStatus {
+	UploadPriceListAndCustomerGroup = 'Upload PS & CG',
+	ReviewSparklayer = 'Review Sparklayer'
 }

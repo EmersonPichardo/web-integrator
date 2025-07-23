@@ -10,9 +10,8 @@ const initWebhooks = async (): Promise<void> => {
 	const webhooks = await airtableClient.webHooks.get();
 
 	for (const type of Object.values(WebhookType)) {
-		const existing = webhooks.find(_ => _.notificationUrl === `${WEBHOOK_URL}/${type}`);
-
-		if (existing) await airtableClient.webHooks.delete(existing.id);
+		const existingWebhooks = webhooks.filter(_ => _.notificationUrl.endsWith(`/${type}`));
+		existingWebhooks.forEach(async (existing) => await airtableClient.webHooks.delete(existing.id));
 
 		const newWebhook = await airtableClient.webHooks.create(type);
 		scheduleWebhookRefresh(newWebhook.id, new Date(newWebhook.expirationTime));

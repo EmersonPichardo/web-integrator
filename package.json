@@ -18,14 +18,15 @@
   "homepage": "https://github.com/EmersonPichardo/web-integrator#readme",
   "description": "",
   "dependencies": {
-    "airtable": "^0.12.2",
     "axios": "^1.10.0",
     "dotenv": "^17.2.0",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "papaparse": "^5.5.3"
   },
   "devDependencies": {
     "@types/express": "^5.0.3",
     "@types/node": "^24.0.15",
+    "@types/papaparse": "^5.3.16",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   }

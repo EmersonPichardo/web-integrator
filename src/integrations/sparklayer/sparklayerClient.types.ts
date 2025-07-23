@@ -11,19 +11,10 @@ export interface SparklayerTokenResponse {
 // Price Lists
 export interface SparklayerNewPriceListRequest {
 	name: string;
-	prices?: any[];
+	priceList: SparklayerPriceDetail[];
 }
-export interface SparklayerNewPriceListResponse {
-	id: string;
-	slug: string;
-}
-
-// Customers
-export interface SparklayerNewCustomerRequest {
-	name: string;
-	email: string;
-}
-export interface SparklayerNewCustomerResponse {
-	id: string;
-	group: string;
+export interface SparklayerPriceDetail {
+	sku: string;
+	quantity: number;
+	price: number;
 }

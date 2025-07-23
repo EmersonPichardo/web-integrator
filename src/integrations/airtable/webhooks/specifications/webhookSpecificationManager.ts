@@ -1,5 +1,5 @@
 import WebhookType from "../webhookType";
-import priceListUploadedWebhookSpecification from "./priceListUploaded.spec";
+import { priceListUploadedWebhookSpecification } from "./priceListUploaded.spec";
 import { WebhookSpecification } from "./webhookSpecification";
 
 const WEBHOOK_URL = process.env.WEBHOOK_URL?.replace(/\/$/, ''); // remove trailing slash

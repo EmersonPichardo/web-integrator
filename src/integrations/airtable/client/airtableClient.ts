@@ -2,7 +2,7 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 import WebhookType from '../webhooks/webhookType';
 import { webhookSpecificationManager } from '../webhooks/specifications/webhookSpecificationManager';
-import { AirtableCreateWebhookResponse, AirtableGetWebhooksResponse, AirtableRefreshWebhookResponse, AirtableTicketStatus, AirtableWebhook, AirtableWebhookPayloadResponse } from './airtableClient.types';
+import { AirtableCreateWebhookResponse, AirtableGetWebhooksResponse, AirtableRefreshWebhookResponse, AirtableCustomerStatus, AirtableWebhook, AirtableWebhookPayloadResponse } from './airtableClient.types';
 dotenv.config();
 
 const AIRTABLE_API_BASE_URL = process.env.AIRTABLE_API_BASE_URL?.replace(/\/$/, ''); // remove trailing slash
@@ -26,7 +26,7 @@ airtableApi.interceptors.response.use(
 	}
 );
 
-//Webhook management
+// Webhook management
 const baseWebhookEndpoint = `/bases/${AIRTABLE_BASE_ID}/webhooks`;
 
 const getWebhooks = async (): Promise<AirtableWebhook[]> => {
@@ -50,17 +50,44 @@ const refreshWebhook = async (webhookId: string): Promise<Date> => {
 };
 
 const getWebhookPayload = async (webhookId: string): Promise<AirtableWebhookPayloadResponse> => {
-	const response = await airtableApi.get<AirtableWebhookPayloadResponse>(`${baseWebhookEndpoint}/${webhookId}/payloads`);
-	const a = JSON.stringify(response?.data);
+	const cursor = await getWebhookCursor(webhookId);
+	const response = await airtableApi.get<AirtableWebhookPayloadResponse>(`${baseWebhookEndpoint}/${webhookId}/payloads?cursor=${cursor}`);
+	await upsertWebhookCursor(webhookId, response?.data?.cursor || 0);
 	return response?.data;
 };
 
-//Tickets management
-const baseTicketsEndpoint = `/bases/${AIRTABLE_BASE_ID}/tables/{tickets-table-id}`;
+const baseWebhookCursorsEndpoint = `/${AIRTABLE_BASE_ID}/webhookCursors`;
 
-const updateTicketStatus = async (ticketId: string, status: AirtableTicketStatus): Promise<void> => {
-	await airtableApi.patch(`${baseTicketsEndpoint}/records/${ticketId}`, { fields: { Status: status } });
-}
+const getWebhookCursor = async (webhookId: string): Promise<number> => {
+	const queryParams = new URLSearchParams([
+		['fields[]', 'Cursor'],
+		['maxRecords', '1'],
+		['filterByFormula', `{Webhook ID}="${webhookId}"`]
+	]);
+	const response = await airtableApi.get<any>(`${baseWebhookCursorsEndpoint}?${queryParams.toString()}`);
+	return response?.data?.records[0]?.fields?.Cursor || 0;
+};
+
+const upsertWebhookCursor = async (webhookId: string, cursor: number): Promise<void> => {
+	const upsertRequest = {
+		performUpsert: { fieldsToMergeOn: ["Webhook ID"] },
+		records: [{ fields: { "Webhook ID": webhookId, "Cursor": cursor } }]
+	};
+
+	await airtableApi.patch(baseWebhookCursorsEndpoint, upsertRequest);
+};
+
+// Customers management
+const baseTicketsEndpoint = `/${AIRTABLE_BASE_ID}/customers`;
+
+const updateCustomerStatus = async (recordId: string, status: AirtableCustomerStatus): Promise<void> => {
+	await airtableApi.patch(`${baseTicketsEndpoint}/${recordId}`, { fields: { Status: status } });
+};
+
+// Errors management
+const registerError = async (error: unknown): Promise<void> => {
+
+};
 
 export const airtableClient = {
 	webHooks: {
@@ -70,7 +97,10 @@ export const airtableClient = {
 		refresh: refreshWebhook,
 		getPayload: getWebhookPayload
 	},
-	tickets: {
-		updateStatus: updateTicketStatus
+	customers: {
+		updateStatus: updateCustomerStatus
+	},
+	error: {
+		register: registerError
 	}
 }

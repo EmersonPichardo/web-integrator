@@ -1,3 +1,6 @@
 export interface CsvContent {
-	data: (string | number | Date | boolean | null)[][]
+	data: (string | number | null)[][]
+}
+export interface FileDetails {
+	url: string;
 }
